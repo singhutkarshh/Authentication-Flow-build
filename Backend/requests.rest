@@ -1,0 +1,39 @@
+GET http://localhost:3000/posts
+Authorization:
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "kyle"
+}
+
+### 
+
+POST http://localhost:3400/auth/users/register
+Content-Type: application/json
+
+{
+    "firstName" : "Utkarsh",
+    "lastName" : "Singh",
+    "username" : "son",
+    "email" : "abc@gmail.com",
+    "password" : "utkarshpass"
+}
+
+###
+
+POST http://localhost:4030/auth/users/signin
+Content-Type: application/json
+
+{
+    "username" : "mon",
+    "password" : "utkarshpass"
+}
+
+###
+
+GET http://localhost:4030/auth/users/posts
+Authorization:

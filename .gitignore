@@ -1,0 +1,6 @@
+# dependencies
+Backend/node_modules
+Backend/.env
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js

@@ -1,0 +1,50 @@
+require("dotenv").config()
+const jwt = require("jsonwebtoken");
+const registerModel = require("../models/registeredUsers.js");
+
+const userRegistration = (req, res) => {
+    const userInfo = req.body;
+    console.log(userInfo);
+    const newUser = new registerModel(userInfo);
+    newUser.save().then(() => {
+        res.status(200).send({
+            error: { status: false, message: null },
+            payload: userInfo
+        });
+    }).catch((err) => {
+        res.status(401).send({
+            error: { status: true, message: err.message },
+            payload: userInfo
+        });
+    });
+}
+const userSignin = (req, res) => {
+    const userInfo = req.body;
+    var flag;
+     registerModel.findOne({ username: userInfo.username },(err,data)=>{
+        if(err){
+            flag = false;
+        }
+        else{
+            if(data){
+                if(data.username = userInfo.username && data.password == userInfo.password){
+                    flag = true;
+               }else{
+                flag = false;
+               }
+            }else{
+                flag = false;
+            }
+        }
+        if(flag){
+            // generate token
+            const user = {name : userInfo.username};
+             const accessToken = jwt.sign(user,process.env.SECRET_ACCESS_TOKEN);
+            res.send({loggedin : true , payload : {accessToken}});
+        }else{
+            res.send({loggedin : false , payload : null});
+        }
+    })
+}
+
+module.exports = { userRegistration, userSignin };
