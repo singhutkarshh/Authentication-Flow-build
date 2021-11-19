@@ -13,17 +13,24 @@
 }
 
 .signInWindow {
-  display: flex;
   height: 40vh;
   width: 20vw;
-  flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
   border: 2px solid black;
   z-index: 20;
   position: absolute;
   display: none;
   background-color: white;
+}
+
+.signInWindow > h2 {
+  text-align: center;
+}
+.signInWindow > input {
+  margin: 1rem 1.5rem;
+}
+.signInWindow > button {
+  margin: 1rem 35%;
 }
 
 .registerWindow {
@@ -38,6 +45,9 @@
 .input {
   width: 80%;
   height: 3rem;
+}
+.link {
+  margin-left: 7.5rem;
 }
 
 .btn {

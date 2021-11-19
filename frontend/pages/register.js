@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Head from "next/head"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios, { Axios } from "axios";
 
 const RegisterWindow = () => {
@@ -14,15 +14,28 @@ const RegisterWindow = () => {
     const btnHandler =  async(e) =>{
       e.preventDefault();
       console.log(formData);
-      const response = await axios.post(`http://localhost:8080/auth/users/register`,formData);
-      console.log(response.data);
-      setFormData({
-        firstName:"",
-        lastName:"",
-        username:"",
-        email:"",
-        password:""
-    })
+      const {firstName , lastName , username , email , password} = formData;
+      if(firstName && lastName && username && email && password){
+        const response = await axios.post(`http://localhost:8080/auth/users/register`,formData);
+        const {error,payload} = response.data;
+        if(error.status){
+          alert("Registration failed!");
+        }else{
+          alert("Registration successfull ..Login Now!")
+          setFormData({
+              firstName:"",
+              lastName:"",
+              username:"",
+              email:"",
+              password:""
+          })
+          window.location.replace("http://localhost:3000/");
+        }
+      }else{
+          alert("Registration failed! Filled all credentials correctly");
+      }
+     
+      
     }
     return (
         <>
