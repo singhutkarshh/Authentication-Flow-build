@@ -1,6 +1,7 @@
 const express = require("express");
-const { userRegistration, userSignin } = require("../controller/authController.js");
+const { userRegistration, userSignin ,userLoginStatus} = require("../controller/authController.js");
 const { authenticateToken } = require("../middlewares/authMiddleware.js");
+const {checkLoginStatus} = require("../middlewares/authMiddleware")
 const authRoutes = express.Router();
 
 const posts = [
@@ -10,7 +11,8 @@ const posts = [
     ];
 
 authRoutes.post("/users/register", userRegistration);
-authRoutes.post("/users/signin", userSignin);
+authRoutes.get("/users/loginstatus", userLoginStatus);
+authRoutes.post("/users/signin", checkLoginStatus,userSignin);
 authRoutes.get("/users/posts", authenticateToken , (req,res)=>{
     res.json(posts.filter((post)=>  post.username == req.user.name));
 });

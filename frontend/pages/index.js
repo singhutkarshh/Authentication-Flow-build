@@ -1,15 +1,25 @@
+import axios from "axios";
 import Head from "next/head";
 import { useEffect } from "react";
 import Signin from "../components/signinWindow";
 import styles from "../styles/Home.module.css";
 
+
 const Home = () => {
+ 
   useEffect(() => {
-    const dropBox = document.querySelector("#signInBox");
-    setTimeout(() => {
-      console.log("hello");
-      dropBox.style.display = "block";
-    }, 5000);
+    axios.get(`http://localhost:8080/auth/users/loginstatus`).then((res)=>{
+      const {loggedin , payload} = res.data;
+      if(loggedin){
+        alert("User is already logged in!");
+      }else{
+        const dropBox = document.querySelector("#signInBox");
+        setTimeout(() => {
+          dropBox.style.display = "block";
+        }, 5000);
+      }
+    });
+   
   }, [])
   return (
     <>

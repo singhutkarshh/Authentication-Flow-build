@@ -1,6 +1,10 @@
 require("dotenv").config()
 const jwt = require("jsonwebtoken");
 const registerModel = require("../models/registeredUsers.js");
+const redis = require("redis");
+
+
+const client = redis.createClient(process.env.REDIS_PORT)
 
 const userRegistration = (req, res) => {
     const userInfo = req.body;
@@ -19,6 +23,7 @@ const userRegistration = (req, res) => {
     });
 }
 const userSignin = (req, res) => {
+    console.log("fetching . .");
     const userInfo = req.body;
     var flag;
      registerModel.findOne({ username: userInfo.username },(err,data)=>{
@@ -39,12 +44,29 @@ const userSignin = (req, res) => {
         if(flag){
             // generate token
             const user = {name : userInfo.username};
-             const accessToken = jwt.sign(user,process.env.SECRET_ACCESS_TOKEN);
-            res.send({loggedin : true , payload : {accessToken}});
+            const accessToken = jwt.sign(user,process.env.SECRET_ACCESS_TOKEN);
+            //caching token
+            client.setex("loginData",86400,JSON.stringify({data : userInfo , accessToken}));
+            res.send({loggedin : true , payload : { data : userInfo ,accessToken}});
         }else{
             res.send({loggedin : false , payload : null});
         }
     })
 }
 
-module.exports = { userRegistration, userSignin };
+const userLoginStatus = (req,res) =>{
+    client.get("loginData",(err , dt)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            if(dt == null){
+              res.send({loggedin:false , payload : null})
+            }
+            else{
+              res.send({loggedin:true , payload : JSON.parse(dt)});
+            }
+        }
+    })
+}
+module.exports = { userRegistration, userSignin ,userLoginStatus};

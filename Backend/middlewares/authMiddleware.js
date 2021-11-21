@@ -1,6 +1,9 @@
 require("dotenv").config()
 const jwt = require("jsonwebtoken");
+const redis = require("redis");
 
+
+const client = redis.createClient(process.env.REDIS_PORT)
 
 const authenticateToken  = (req,res,next) =>{
     // token format => bearer token
@@ -14,4 +17,18 @@ const authenticateToken  = (req,res,next) =>{
   })
 };
 
-module.exports = {authenticateToken};
+const checkLoginStatus = (req,res,next) =>{
+  client.get("loginData" , (err , dt)=>{
+    if(err){
+      console.log(err);
+    }else{
+      if(dt == null){
+        next();
+      }else{
+        res.send({loggedin : true , payload : JSON.parse(dt)});
+      }
+    }
+  })
+}
+
+module.exports = {authenticateToken , checkLoginStatus};
